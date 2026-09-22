@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -11,8 +10,9 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-if (process.env.NODE_ENV === 'production'){
-  app.use(helmet());
+// Add securiy headers
+if (process.env.NODE_ENV === 'production') {
+  app.use(helmet()); 
 }
 
 const PORT = process.env.PORT || 3001;
