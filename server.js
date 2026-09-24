@@ -22,23 +22,23 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
-app.get('/health', async (req, res) => {
-  try {
-    await pool.query('SELECT 1');
+app.get('/health', (req, res) => {
+  pool.get('SELECT 1', (err) => {
+    if (err) {
+      return res.status(503).json({
+        status: 'error',
+        db: 'disconnected',
+        message: err.message,
+        uptime: process.uptime()
+      });
+    }
     res.json({
       status: 'ok',
       db: 'connected',
       uptime: process.uptime()
     });
-  } catch (err) {
-    res.status(503).json({
-      status: 'error',
-      db: 'disconnected',
-      message: err.message,
-      uptime: process.uptime()
-    })
-  }
-})
+  });
+});
 
 // API Routes
 app.use('/api/dreams', dreamsRouter);
